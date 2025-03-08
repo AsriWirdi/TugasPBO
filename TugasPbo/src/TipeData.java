@@ -8,8 +8,7 @@ public class TipeData {
   private double ipk;
 
   // construktor
-
-
+  // jadi, Setiap instance class TipeData wajib isi parameter construktornya dan valuenya di simpan di field class Tipe Data
   public TipeData(String nim, String nama, String alamat, int semester, int sks, double ipk) {
     this.nim = nim;
     this.nama = nama;
@@ -46,6 +45,8 @@ public class TipeData {
   }
 
 
+  // mengoverride method toString agar nanti saat di print kelasnya akan tampil persis seperti apa yang di return
+  // note : tidak wajib di override, kalau tidak di override nanti muncul hashcode dari kelasnya.
   @Override
   public String toString() {
     return "TipeData{" +
