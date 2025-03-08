@@ -7,16 +7,26 @@ import java.util.Scanner;
 
 public class Database {
   //field
+
+  // menentukan struktur data -> ArrayList
+  // nanti data data kita di simpan ke ArrayList
   public ArrayList<TipeData> data = new ArrayList<>();
+
   Scanner sc = new Scanner(System.in);
+
+  // menentukan path atau direktori file csv
   private Path path = Path.of("src/database.csv");
+
+  // deklarasi kelas TipeData agar bisa digunakan
   TipeData mhs = new TipeData(null, null, null, 0, 0, 0.0);
 
   // construktor
   public Database() {
-    start();
+    start(); // jadi setiap instace TipeData, metod start() terpanggil
   }
 
+  // start() untuk membaca String keseluruhan dari file csv
+  // file database.csv sudah ada datanya, jadi dibaca kemudian dibagi ke variable yang akan di masukkan ke parameter TipeData 
   public void start() {
     try {
       List<String> lines = Files.readAllLines(path);
@@ -51,20 +61,24 @@ public class Database {
 //    return status;
 //  }
 
+  // untuk mencari index berdasarkan nim yang diinput (ketika nim ditemukan)
   public int searchIndex(String nim) {
-    int index = -1;
+    int index = -1; // nim tidak ditemukan akan mengembalikan -1
     if (!data.isEmpty()) {
       for (int i = 0; i < data.size(); i++) {
-        if (data.get(i).getNim().equalsIgnoreCase(nim)) {
-          index = i;
+        if (data.get(i).getNim().equalsIgnoreCase(nim)) { // apabila inputan sama dengan nim yang ada di field kelas 
+          index = i; // ketika index di temukan
         }
       }
     }
     return index;
   }
 
+
+  // untuk menyimpan
   public void save() {
 
+    // buat Struktur data csvnya berdasarkan data yang diberikan 
     StringBuilder sb = new StringBuilder();
 
     if (!data.isEmpty()) {
@@ -74,8 +88,9 @@ public class Database {
         mhs = data.get(i);
         String line = mhs.getNim() + ";" + mhs.getNama() + ";" + mhs.getAlamat() + ";" + mhs.getSemester() + ";" + mhs.getSks() + ";" + mhs.getIpk() + "\n";
         sb.append(line);
-
       }
+
+      // membuat atau menulis sb ke file csv
       try {
         Files.writeString(path, sb);
       } catch (IOException e) {
@@ -85,6 +100,7 @@ public class Database {
   }
 
 
+  // Create - membuat data baru
   public void tambah() {
     Scanner sc = new Scanner(System.in);
     System.out.print("masukkan nim baru : ");
@@ -92,13 +108,18 @@ public class Database {
 
     boolean status = true; // nilai awal true
       for (int i = 0; i < data.size(); i++) {
+
+        // mengecek apakah nim sudah ada di database atau belum
+        // jika belum akan menghasilkan true
+        // jika sudah ada akan menghasilkan false - program berhenti
         if (data.get(i).getNim().equalsIgnoreCase(nim)) {
           status = false; // program berhenti karena nimnya sudah ada sebelumnya di database
         }
       }
 
+      // apabila belum ada nimnya di database
+      // membuat data baru
       if (status == true) {
-
         System.out.print("masukkan nama : ");
         String nama = sc.nextLine();
         System.out.print("masukkan alamat : ");
@@ -110,21 +131,27 @@ public class Database {
         System.out.print("masukkan ipk : ");
         double ipk = sc.nextDouble();
 
+        // memastikan ulang apakah user sudah yakin akan menyimpan
         System.out.printf("Apakah anda yakin ingin menambahkan (%s,%s) (Y/N)? : ", nim, nama);
         char yn = sc.next().charAt(0);
         yn = Character.toUpperCase(yn);
+
+        // jika ya, data akan ditambahkan kemudian di save
         if (yn == 'Y') {
           mhs = new TipeData(nim, nama, alamat, semester, sks, ipk);
           data.add(mhs);
           save();
           System.out.println("Data berhasil disimpan");
         }
+
+        // menampilkan print error bahwa nim sudah ada di database
       } else{
         System.err.printf("! : nim %s telah ada di database\n",nim);
       }
 
   }
 
+    // menghapus data berdasarkan nim
     public void delete(String nim){
       boolean status = false; // program berhenti ketika nimnya tidak di temukan
       if (!data.isEmpty()) {
@@ -135,15 +162,20 @@ public class Database {
 
         }
 
+        // program berjalan ketika inputan nim ada yang sama ada di database
         if (status == true) {
           System.out.printf("Apakah anda yakin ingin menghapus %s (Y/N)? : ", nim);
           char yn = sc.next().charAt(0);
           yn = Character.toUpperCase(yn);
+
+          // memastikan ulang, apakah user yakin ingin menghapus
           if (yn == 'Y') {
             data.remove(searchIndex(nim));
             save();
             System.out.println("Data berhasil disimpan");
           }
+
+          // menampilkan print error ketika nim tidak ada yang cocok di database 
         }else {
           System.err.println("! : nim yang di masukkan tidak cocok");
         }
@@ -151,6 +183,7 @@ public class Database {
     }
 
 
+    // memperbaharui data yang sudah ada
     public void update (String nim){
       boolean status = false; // program berhenti ketika nimnya tidak di temukan
       if (!data.isEmpty()) {
@@ -161,6 +194,7 @@ public class Database {
         }
       }
 
+      // program akan berjalan ketika inputan nim ada didalam database
       if (status == true) {
         Scanner sc = new Scanner(System.in);
         System.out.print("masukkan nim baru : ");
@@ -178,6 +212,8 @@ public class Database {
         System.out.printf("Apakah anda yakin ingin mengupdate %s (Y/N)? : ", nim);
         char yn = sc.next().charAt(0);
         yn = Character.toUpperCase(yn);
+
+        // memastikan ulang apakah user sudah yakin mengupdate data
         if (yn == 'Y') {
           mhs = new TipeData(nimBaru, namaBaru, alamatBaru, semesterBaru, sksBaru, ipkBaru);
           data.set(searchIndex(nim), mhs);
@@ -187,11 +223,14 @@ public class Database {
           System.out.println("Dibatalkan");
         }
 
+        // menampilkan print error ketika nim yang dimasukkan tidak ada yang cocok di database
       } else {
         System.err.println("! : nim yang di masukkan tidak cocok");
       }
     }
 
+
+  // mencetak/menampilkan data file csv berdasarkan format yang telah diberikan
     public void view () {
       System.out.println("==================================================================================");
       System.out.printf("| %-8.8S |", "NIM");
