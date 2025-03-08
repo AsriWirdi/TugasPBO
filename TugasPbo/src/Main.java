@@ -29,6 +29,16 @@ public class Main {
           String nimDel = sc.next();
           db.delete(nimDel);
           break;
+         case 'X':
+
+          System.out.println("NOTE : kamu memilih EXIT");
+          System.out.println("APAKAH KAMU YAKIN AKAN KELUAR DARI APLIKASI? Y/N");
+          System.out.print("Pilih : ");
+          String pilihan = sc.next();
+          if (pilihan.equalsIgnoreCase("Y")) {
+            System.exit(0);
+          }
+          break;
       }
 
     }
@@ -43,6 +53,7 @@ public class Main {
     System.out.println("|       [R] READ      |");
     System.out.println("|      [U] UPDATE     |");
     System.out.println("|      [D] DELETE     |");
+    System.out.println("|       [X] EXIT      |");
     System.out.println("+---------------------+");
   }
 }
